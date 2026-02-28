@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from sqlalchemy import text
+from app.db.session import SessionLocal
 
 app = FastAPI(
     title="Mental Health Text Analytics API",
@@ -8,3 +10,12 @@ app = FastAPI(
 @app.get("/health", tags=["system"])
 def health():
     return {"status": "ok"}
+
+@app.get("/health/db", tags=["system"])
+def health_db():
+    db = SessionLocal()
+    try:
+        db.execute(text("SELECT 1"))
+        return {"database": "ok"}
+    finally:
+        db.close()
