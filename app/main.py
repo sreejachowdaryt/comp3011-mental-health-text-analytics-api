@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from sqlalchemy import text
 from app.db.session import SessionLocal
+from app.api.posts import router as posts_router
 
 app = FastAPI(
     title="Mental Health Text Analytics API",
@@ -19,3 +20,5 @@ def health_db():
         return {"database": "ok"}
     finally:
         db.close()
+
+app.include_router(posts_router)
