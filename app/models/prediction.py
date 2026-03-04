@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, func, Text
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -18,6 +18,9 @@ class Prediction(Base):
     confidence = Column(Float, nullable=True)
 
     model_version = Column(String(50), nullable=False, default="logreg-tfidf-v1")
+    
+    # ✅ NEW: stores the exact text used for this prediction at that time
+    text_snapshot = Column(Text, nullable=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 

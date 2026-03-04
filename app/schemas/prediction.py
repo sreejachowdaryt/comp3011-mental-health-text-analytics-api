@@ -17,7 +17,21 @@ class PredictionResponse(BaseModel):
     confidence: float | None
     model_version: str
     created_at: datetime
+    text_snapshot: str  
     post: PostMini
 
     class Config:
         from_attributes = True
+
+class PredictionBasicResponse(BaseModel):
+    id: int
+    post_id: int
+    label: str
+    confidence: float | None
+    model_version: str
+    created_at: datetime
+    text_snapshot: str  
+
+    class Config:
+        from_attributes = True
+
