@@ -228,10 +228,10 @@ pip install -r requirements.txt
 
 Create a .env file in the root directory:
 
-DATABASE_URL=postgresql://username:password@localhost:5432/mh_api
-JWT_SECRET_KEY=your_secret_key
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+DATABASE_URL=postgresql://username:password@localhost:5432/mh_api      
+JWT_SECRET_KEY=your_secret_key         
+JWT_ALGORITHM=HS256      
+ACCESS_TOKEN_EXPIRE_MINUTES=30      
 
 ### 5️⃣ Run Database Migrations
 ```bash
