@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mental Health Text Analytics API</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/static/css/styles.css"/>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── SIDEBAR ── -->
+  <nav id="sidebar" style="display:none">
+    <div class="logo">
+      <div class="logo-title">Mental Health<br>Text Analytics</div>
+      <div class="logo-sub">COMP3011 · Leeds</div>
+      <div class="logo-pill">
+        <span class="logo-pill-dot"></span>
+        API Connected
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <button class="nav-btn active" data-page="dashboard">
+        <span class="nav-icon">▦</span> Dashboard
+      </button>
+      <button class="nav-btn" data-page="predict">
+        <span class="nav-icon">⚡</span> Quick Predict
+      </button>
+    </div>
+
+    <div class="nav-section" style="margin-top:8px">
+      <div class="nav-label">Management</div>
+      <button class="nav-btn" data-page="posts">
+        <span class="nav-icon">≡</span> Posts
+      </button>
+      <button class="nav-btn" data-page="predictions">
+        <span class="nav-icon">◎</span> Predictions
+      </button>
+    </div>
+
+    <div id="sidebar-footer">
+      <div class="user-card">
+        <div id="user-email">—</div>
+        <div id="user-role">analyst</div>
+      </div>
+      <button id="logout-btn">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- ── AUTH PAGE ── -->
+  <div id="auth-page">
+    <div class="auth-wrapper">
+      <!-- Left panel -->
+      <div class="auth-panel-left">
+        <h2>Mental Health Text Analytics API</h2>
+        <p>A secure, database-driven REST API for detecting mental health indicators from user-generated text using machine learning.</p>
+        <div class="auth-features">
+          <div class="auth-feature">
+            <div class="auth-feature-icon">🔒</div>
+            JWT-secured endpoints
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">🧠</div>
+            LogReg + TF-IDF classifier
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">📊</div>
+            Full prediction history
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">🗄️</div>
+            PostgreSQL + SQLAlchemy ORM
+          </div>
+        </div>
+      </div>
+      <!-- Right panel -->
+      <div class="auth-panel-right">
+        <div class="auth-logo">Mental Health Analytics</div>
+        <div class="auth-logo-sub">COMP3011 — University of Leeds</div>
+        <div class="auth-tabs">
+          <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign in</button>
+          <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register</button>
+        </div>
+        <div id="login-form">
+          <div class="field"><label>Email address</label><input type="email" id="login-email" placeholder="you@example.com"/></div>
+          <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"/></div>
+          <div id="login-error" class="error-msg"></div>
+          <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="doLogin()">Sign in</button>
+        </div>
+        <div id="register-form" style="display:none">
+          <div class="field"><label>Email address</label><input type="email" id="reg-email" placeholder="you@example.com"/></div>
+          <div class="field"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••"/></div>
+          <div id="reg-error" class="error-msg"></div>
+          <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="doRegister()">Create account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <main id="main" style="display:none">
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Dashboard</div>
+          <div class="topbar-sub">Overview of your mental health text analytics</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Posts</div>
+          <div class="stat-value" id="stat-posts">—</div>
+          <div class="stat-sub">submitted texts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Predictions</div>
+          <div class="stat-value" id="stat-preds">—</div>
+          <div class="stat-sub">ML inferences run</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Depression</div>
+          <div class="stat-value" style="color:var(--depression)" id="stat-dep">—</div>
+          <div class="stat-sub">detected cases</div>
+        </div>
+        <div class="stat-card">
+           <div class="stat-label">Anxiety</div>
+           <div class="stat-value" style="color:var(--anxiety)" id="stat-anx">—</div>
+           <div class="stat-sub">detected cases</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Normal</div>
+          <div class="stat-value" style="color:var(--normal)" id="stat-norm">—</div>
+          <div class="stat-sub">detected cases</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="section-heading">Label Distribution</div>
+          <div class="donut-wrap">
+            <canvas id="donut-chart" width="130" height="130"></canvas>
+            <div class="donut-legend" id="donut-legend"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-heading">Recent Predictions</div>
+          <div id="recent-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK PREDICT -->
+    <div id="page-predict" class="page">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Quick Predict</div>
+          <div class="topbar-sub">Submit text for instant ML classification</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>Text to analyse</label>
+          <textarea id="predict-text" placeholder="Enter the text you want to classify for mental health indicators..."></textarea>
+        </div>
+        <button class="btn btn-primary" id="predict-btn" onclick="doPredict()">⚡ Run Prediction</button>
+      </div>
+      <div class="predict-result" id="predict-result">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted)">Classification Result</div>
+        <div class="result-label" id="result-label"></div>
+        <div id="result-badge" style="margin-bottom:14px"></div>
+        <div class="conf-bar-wrap">
+          <div class="conf-bar-label">
+            <span>Confidence Score</span>
+            <span id="result-conf-pct" style="font-weight:700"></span>
+          </div>
+          <div class="conf-bar-bg"><div class="conf-bar-fill" id="result-bar"></div></div>
+        </div>
+        <div class="divider"></div>
+        <div style="font-size:12px;color:var(--text-muted);display:flex;gap:20px">
+          <span>Model: <strong style="color:var(--text)" id="result-model"></strong></span>
+          <span>Post ID: <strong style="color:var(--text)" id="result-postid"></strong></span>
+        </div>
+        <div id="result-uncertain" style="margin-top:10px;font-size:12px;color:var(--anxiety);display:none;font-weight:600">
+          ⚠ Low confidence — result may be uncertain
+        </div>
+        <div class="predict-next-action">
+          <button class="btn btn-ghost" onclick="resetPredictForm()">+ New Prediction</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTS -->
+    <div id="page-posts" class="page">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Posts</div>
+          <div class="topbar-sub">Create and manage text submissions</div>
+        </div>
+        <button class="btn btn-primary" onclick="openCreateModal()">+ New Post</button>
+      </div>
+      <div id="posts-list"></div>
+    </div>
+
+    <!-- PREDICTIONS -->
+    <div id="page-predictions" class="page">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Predictions</div>
+          <div class="topbar-sub">All ML prediction results</div>
+        </div>
+      </div>
+      <div id="predictions-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── CREATE POST MODAL ── -->
+<div class="modal-overlay" id="create-modal">
+  <div class="modal">
+    <h2>New Post</h2>
+    <div class="field"><label>Text content</label><textarea id="new-post-text" placeholder="Enter text to classify..."></textarea></div>
+    <div class="field">
+      <label>Source</label>
+      <select id="new-post-source">
+        <option value="manual">manual</option>
+        <option value="reddit">reddit</option>
+        <option value="twitter">twitter</option>
+        <option value="survey">survey</option>
+        <option value="other">other</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('create-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPost()">Create + Predict</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT POST MODAL ── -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h2>Edit Post</h2>
+    <input type="hidden" id="edit-post-id"/>
+    <div class="field"><label>Text content</label><textarea id="edit-post-text"></textarea></div>
+    <div class="field">
+      <label>Source</label>
+      <select id="edit-post-source">
+        <option value="manual">manual</option>
+        <option value="reddit">reddit</option>
+        <option value="twitter">twitter</option>
+        <option value="survey">survey</option>
+        <option value="other">other</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('edit-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── HISTORY MODAL ── -->
+<div class="modal-overlay" id="history-modal">
+  <div class="modal" style="width:560px">
+    <h2>Prediction History — Post #<span id="history-post-id"></span></h2>
+    <div id="history-list"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('history-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<!-- ── SCRIPTS (load order matters) ── -->
+<script src="/static/js/api.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/dashboard.js"></script>
+<script src="/static/js/posts.js"></script>
+<script src="/static/js/predictions.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (token) showApp();
+    else showAuth();
+
+    document.querySelectorAll('.nav-btn[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => navigate(btn.dataset.page));
+    });
+    document.getElementById('logout-btn').addEventListener('click', logout);
+
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+      m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+    });
+  });
+
+  function navigate(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`page-${page}`).classList.add('active');
+    document.querySelector(`.nav-btn[data-page="${page}"]`).classList.add('active');
+    if (page === 'dashboard') loadDashboard();
+    if (page === 'posts') loadPosts();
+    if (page === 'predictions') loadPredictions();
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+  }
+</script>
+
+</body>
+</html>
