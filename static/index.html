@@ -14,8 +14,8 @@
   <!-- ── SIDEBAR ── -->
   <nav id="sidebar" style="display:none">
     <div class="logo">
-      <div class="logo-title">Mental Health<br>Text Analytics</div>
-      <div class="logo-sub">COMP3011 · Leeds</div>
+      <div class="logo-title">Mental Health<br>Text Analytics API</div>
+      <div class="logo-sub">COMP3011 · Web Services and Web Data</div>
       <div class="logo-pill">
         <span class="logo-pill-dot"></span>
         API Connected
@@ -32,7 +32,7 @@
       </button>
     </div>
 
-    <div class="nav-section" style="margin-top:8px">
+    <div class="nav-section">
       <div class="nav-label">Management</div>
       <button class="nav-btn" data-page="posts">
         <span class="nav-icon">≡</span> Posts
@@ -43,9 +43,12 @@
     </div>
 
     <div id="sidebar-footer">
-      <div class="user-card">
-        <div id="user-email">—</div>
-        <div id="user-role">analyst</div>
+      <div class="user-card" id="user-card">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div id="user-email">—</div>
+          <div id="user-role">Authorized</div>
+        </div>
       </div>
       <button id="logout-btn">Sign out</button>
     </div>
@@ -79,7 +82,7 @@
       </div>
       <!-- Right panel -->
       <div class="auth-panel-right">
-        <div class="auth-logo">Mental Health Analytics</div>
+        <div class="auth-logo">Web Services and Web Data</div>
         <div class="auth-logo-sub">COMP3011 — University of Leeds</div>
         <div class="auth-tabs">
           <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign in</button>
@@ -129,9 +132,9 @@
           <div class="stat-sub">detected cases</div>
         </div>
         <div class="stat-card">
-           <div class="stat-label">Anxiety</div>
-           <div class="stat-value" style="color:var(--anxiety)" id="stat-anx">—</div>
-           <div class="stat-sub">detected cases</div>
+          <div class="stat-label">Anxiety</div>
+          <div class="stat-value" style="color:var(--anxiety)" id="stat-anx">—</div>
+          <div class="stat-sub">detected cases</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Normal</div>

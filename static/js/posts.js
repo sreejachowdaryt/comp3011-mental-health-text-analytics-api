@@ -42,13 +42,13 @@ async function loadPosts() {
         </div>
         <div class="post-text">${escapeHTML(p.text)}</div>
         <div class="post-actions">
-          <button class="btn btn-ghost" style="padding:6px 14px;font-size:12px"
+          <button class="btn btn-ghost btn-sm"
             onclick="loadLatestPred(${p.id}, this)">◈ Latest Prediction</button>
-          <button class="btn btn-ghost" style="padding:6px 14px;font-size:12px"
+          <button class="btn btn-ghost btn-sm"
             onclick="openHistory(${p.id})">⊞ History</button>
-          <button class="btn btn-ghost" style="padding:6px 14px;font-size:12px"
+          <button class="btn btn-ghost btn-sm"
             onclick="openEdit(${p.id}, \`${escapeJS(p.text)}\`, '${escapeHTML(p.source)}')">✎ Edit</button>
-          <button class="btn btn-danger" style="padding:6px 14px;font-size:12px"
+          <button class="btn btn-danger btn-sm"
             onclick="deletePost(${p.id})">✕ Delete</button>
         </div>
         <div id="inline-pred-${p.id}" style="margin-top:10px"></div>
@@ -69,11 +69,11 @@ async function loadLatestPred(postId, btn) {
     const el   = document.getElementById(`inline-pred-${postId}`);
 
     el.innerHTML = `
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+      <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:14px;padding:14px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
           ${badgeHTML(pred.label)}
-          <span style="font-size:11px;color:var(--muted)">Confidence: ${pct}%</span>
-          <span style="font-size:11px;color:var(--muted);margin-left:auto">${pred.model_version}</span>
+          <span style="font-size:11px;color:var(--text-muted)">Confidence: ${pct}%</span>
+          <span style="font-size:11px;color:var(--text-muted);margin-left:auto">${pred.model_version}</span>
         </div>
         <div class="conf-bar-bg">
           <div class="conf-bar-fill fill-${pred.label.toLowerCase()}" style="width:${pct}%"></div>
@@ -153,7 +153,7 @@ async function deletePost(id) {
 async function openHistory(postId) {
   document.getElementById('history-post-id').textContent = postId;
   document.getElementById('history-list').innerHTML =
-    '<div style="color:var(--muted);font-size:13px">Loading...</div>';
+    '<div style="color:var(--text-muted);font-size:13px;padding:12px 0">Loading...</div>';
   document.getElementById('history-modal').classList.add('show');
 
   try {
@@ -166,12 +166,12 @@ async function openHistory(postId) {
           <div style="font-size:12px;color:var(--text);margin-bottom:4px">
             ${escapeHTML(p.text_snapshot)}
           </div>
-          <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             ${badgeHTML(p.label)}
-            <span style="font-size:10px;color:var(--muted)">
+            <span style="font-size:10px;color:var(--text-muted)">
               ${p.confidence ? Math.round(p.confidence * 100) + '% confidence' : ''}
             </span>
-            <span style="font-size:10px;color:var(--muted);margin-left:auto">
+            <span style="font-size:10px;color:var(--text-muted);margin-left:auto">
               ${formatDate(p.created_at)}
             </span>
           </div>
@@ -192,7 +192,7 @@ async function doPredict() {
 
   const btn = document.getElementById('predict-btn');
   btn.disabled  = true;
-  btn.innerHTML = '<span class="spinner"></span>Analysing...';
+  btn.innerHTML = '<span class="spinner"></span> Analysing...';
 
   try {
     const res = await api('POST', '/predict', { text });
@@ -209,9 +209,9 @@ async function doPredict() {
 function showPredictResult(res) {
   const pct = res.confidence ? Math.round(res.confidence * 100) : 0;
 
-  document.getElementById('result-label').textContent = res.label;
-  document.getElementById('result-label').style.color = labelColor(res.label);
-  document.getElementById('result-badge').innerHTML   = badgeHTML(res.label);
+  document.getElementById('result-label').textContent    = res.label;
+  document.getElementById('result-label').style.color    = labelColor(res.label);
+  document.getElementById('result-badge').innerHTML      = badgeHTML(res.label);
   document.getElementById('result-conf-pct').textContent = `${pct}%`;
   document.getElementById('result-model').textContent    = res.model_version;
   document.getElementById('result-postid').textContent   = res.post_id;
@@ -225,6 +225,8 @@ function showPredictResult(res) {
 
   document.getElementById('predict-result').classList.add('show');
 }
+
+// ── RESET PREDICT FORM ──
 
 function resetPredictForm() {
   document.getElementById('predict-text').value = '';

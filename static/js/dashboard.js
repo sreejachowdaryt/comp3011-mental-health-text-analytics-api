@@ -1,7 +1,7 @@
 /**
  * dashboard.js
  * Loads and renders the dashboard page:
- * - Summary stat cards (posts, predictions, depression, normal counts)
+ * - Summary stat cards (posts, predictions, depression, anxiety, normal counts)
  * - Donut chart showing label distribution
  * - Recent predictions list
  */
@@ -19,7 +19,8 @@ async function loadDashboard() {
 
     const counts = { Depression: 0, Anxiety: 0, Normal: 0 };
     preds.forEach(p => {
-      if (counts[p.label] !== undefined) counts[p.label]++;
+      const label = p.label;
+      if (counts[label] !== undefined) counts[label]++;
       else counts['Normal']++;
     });
 
@@ -44,9 +45,9 @@ function drawDonut(counts) {
   const total  = Object.values(counts).reduce((a, b) => a + b, 0) || 1;
 
   const colors = {
-    Depression: '#f76a8a',
-    Anxiety:    '#f7c06a',
-    Normal:     '#6af7c8',
+    Depression: '#c65b63',
+    Anxiety:    '#c9922e',
+    Normal:     '#2f8f6b',
   };
 
   let startAngle = -Math.PI / 2;
@@ -63,10 +64,10 @@ function drawDonut(counts) {
     startAngle += slice;
   });
 
-  // Donut hole
+  // Donut hole — matches --surface
   ctx.beginPath();
   ctx.arc(65, 65, 32, 0, 2 * Math.PI);
-  ctx.fillStyle = '#ffffff'; // matches --surface (light theme)
+  ctx.fillStyle = '#ffffff';
   ctx.fill();
 
   // Legend
@@ -74,10 +75,10 @@ function drawDonut(counts) {
   legend.innerHTML = Object.entries(counts).map(([label, val]) => `
     <div class="legend-item">
       <div class="legend-dot" style="background:${colors[label]}"></div>
-      <span style="color:var(--muted)">${label}</span>
-      <span style="margin-left:auto">
+      <span>${label}</span>
+      <span style="margin-left:auto;font-weight:700">
         ${val}
-        <span style="color:var(--muted)">(${Math.round((val / total) * 100)}%)</span>
+        <span style="color:var(--text-muted);font-weight:600">(${Math.round((val / total) * 100)}%)</span>
       </span>
     </div>`).join('');
 }
@@ -103,7 +104,7 @@ function renderRecent(preds) {
         <div style="font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
           ${escapeHTML(p.text_snapshot)}
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:2px">${formatDate(p.created_at)}</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">${formatDate(p.created_at)}</div>
       </div>
       <div>${badgeHTML(p.label)}</div>
     </div>`).join('');

@@ -17,7 +17,17 @@ function showApp() {
   document.getElementById('sidebar').style.display = 'flex';
   document.getElementById('main').style.display = 'block';
   document.getElementById('user-email').textContent = currentUser || '—';
+
+  // Set avatar to first letter of email — read fresh from currentUser
+  setAvatar(currentUser);
+
   navigate('dashboard');
+}
+
+function setAvatar(email) {
+  const avatar = document.getElementById('user-avatar');
+  if (!avatar) return;
+  avatar.textContent = (email && email.length > 0) ? email[0].toUpperCase() : '?';
 }
 
 // ── TAB SWITCH (login ↔ register) ──

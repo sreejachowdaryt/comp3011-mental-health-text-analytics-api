@@ -547,6 +547,13 @@ class TestDirectPredict:
         assert post_resp.status_code == 200
         assert post_resp.json()["source"] == "predict"
 
+    def test_predict_rate_limit(self, client):
+        """11th request within a minute should return 429 Too Many Requests"""
+        for i in range(10):
+            client.post("/predict", json={"text": "test text"})
+        resp = client.post("/predict", json={"text": "test text"})
+        assert resp.status_code == 429
+
 
 # ─────────────────────────────────────────────
 # 10. RESPONSE FORMAT VALIDATION
