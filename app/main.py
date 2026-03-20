@@ -16,6 +16,7 @@ from app.api.predictions import router as predictions_router
 from app.models.post import Post
 from app.models.prediction import Prediction
 from app.services.predictor import predict_text
+from app.api.analytics import router as analytics_router
 
 # ── Rate Limiter setup ──
 limiter = Limiter(key_func=get_remote_address)
@@ -47,7 +48,7 @@ app.include_router(predictions_router)
 class PredictRequest(BaseModel):
     text: str
 
-@app.post("/predict", tags=["predict"])
+@app.post("/predict", tags=["quick predict"])
 @limiter.limit("10/minute")
 def predict(request: Request, req: PredictRequest, db: Session = Depends(get_db)):
     label, confidence = predict_text(req.text)
@@ -79,6 +80,8 @@ def predict(request: Request, req: PredictRequest, db: Session = Depends(get_db)
         "model_version": pred.model_version,
         "created_at": pred.created_at,
     }
+
+app.include_router(analytics_router)
 
 # ── Frontend ──
 app.mount("/static", StaticFiles(directory="static"), name="static")
