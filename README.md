@@ -8,22 +8,22 @@
 
 ## Project Overview
 
-This API classifies user-generated text into three mental health categories — **Depression**, **Anxiety**, and **Normal** — using a Logistic Regression + TF-IDF machine learning pipeline. The system provides authenticated users with full CRUD operations on text posts, automatic ML predictions on submission, complete prediction history with audit trails, and aggregate analytics.
+This API classifies user-generated text into three mental health categories - **Depression**, **Anxiety**, and **Normal** — using a Logistic Regression + TF-IDF machine learning pipeline. The system provides authenticated users with full CRUD operations on text posts, automatic ML predictions on submission, complete prediction history with audit trails, and aggregate analytics.
 
 ### Key Features
 
-- **JWT Authentication** — secure registration and login with bcrypt password hashing
-- **Full CRUD on Posts** — create, read, update, delete text submissions
-- **Automatic ML Prediction** — every post triggers inference on creation
-- **Re-prediction on Update** — text changes generate a new prediction while preserving history
-- **Prediction Audit Trail** — `text_snapshot` field records exact text used at inference time
-- **Cascade Deletion** — deleting a post removes all associated predictions
-- **Uncertainty Flagging** — predictions below 40% confidence are flagged as uncertain
-- **Rate Limiting** — `/predict` limited to 10 requests/minute per IP (HTTP 429 on excess)
-- **Model Versioning** — every prediction stores `model_version` for future model tracking
-- **Analytics Endpoint** — aggregated label distribution and confidence statistics
-- **Frontend Dashboard** — full HTML/CSS/JS interface served by FastAPI
-- **Health Monitoring** — `/health` and `/health/db` endpoints for operational checks
+- **JWT Authentication** - secure registration and login with bcrypt password hashing
+- **Full CRUD on Posts** - create, read, update, delete text submissions
+- **Automatic ML Prediction** - every post triggers inference on creation
+- **Re-prediction on Update** - text changes generate a new prediction while preserving history
+- **Prediction Audit Trail** - `text_snapshot` field records exact text used at inference time
+- **Cascade Deletion** - deleting a post removes all associated predictions
+- **Uncertainty Flagging** - predictions below 40% confidence are flagged as uncertain
+- **Rate Limiting** - `/predict` limited to 10 requests/minute per IP (HTTP 429 on excess)
+- **Model Versioning** - every prediction stores `model_version` for future model tracking
+- **Analytics Endpoint** - aggregated label distribution and confidence statistics
+- **Frontend Dashboard** - full HTML/CSS/JS interface served by FastAPI
+- **Health Monitoring** - `/health` and `/health/db` endpoints for operational checks
 
 ---
 
@@ -63,7 +63,7 @@ This API classifies user-generated text into three mental health categories — 
 | GET | `/predictions/` | List all latest predictions | Yes |
 | GET | `/predictions/{prediction_id}` | Get single prediction by ID | Yes |
 | POST | `/predict` | Direct ML inference (rate limited) | No |
-| GET | `/analytics` | Aggregated prediction analytics | Yes |
+| GET | `/analytics` | Aggregated prediction analytics | No |
 
 ---
 
@@ -168,7 +168,6 @@ The API uses JWT (JSON Web Tokens) for stateless authentication.
 
 The interactive API documentation is available at:
 - **Local:** http://127.0.0.1:8000/docs
-- **Live:** https://comp3011-mental-health-text-analytics-api.onrender.com/docs
 
 ### Step-by-step authentication in Swagger UI
 
